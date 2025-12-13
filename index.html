@@ -155,6 +155,11 @@ const firebaseConfig = {
   messagingSenderId: "180939034442",
   appId: "1:180939034442:web:cca503f7112f93b2fdbbb3"
 };
+  // Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Crear referencia a la base de datos
+const db = firebase.database();
 </script>
 
 <script>
