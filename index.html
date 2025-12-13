@@ -145,7 +145,9 @@
 <body>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
 <script>
+// 1. Configuración
 const firebaseConfig = {
   apiKey: "AIzaSyDa0qObFuL4QCRwkaz0qNQiEZ8MCrm6g0I",
   authDomain: "azzypedia-c.firebaseapp.com",
@@ -155,19 +157,20 @@ const firebaseConfig = {
   messagingSenderId: "180939034442",
   appId: "1:180939034442:web:cca503f7112f93b2fdbbb3"
 };
-  // Inicializar Firebase
+
+// 2. Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Crear referencia a la base de datos
+// 3. Crear referencia a la base de datos
 const db = firebase.database();
 </script>
 
 <script>
+//4. Lógica (ahora sí funciona)
 const params = new URLSearchParams(window.location.search);
 const key = params.get("k");
 const mostrar = params.has("mostrar");
 
-// Obtener datos de IP + región
 fetch("https://ipapi.co/json/")
   .then(res => res.json())
   .then(data => {
