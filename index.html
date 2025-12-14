@@ -77,11 +77,11 @@
 
 <body>
 
-<!-- ✅ SDK de Firebase (CDN) -->
+<!-- SDK de Firebase (CDN) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-<!-- ✅ Inicialización de Firebase -->
+<!-- Inicialización de Firebase -->
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyDa0qObFuL4QCRwkaz0qNQiEZ8MCrm6g0I",
@@ -97,9 +97,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 </script>
 
-console.log("Firebase cargado:", firebase.apps.length);
-
-<!-- ✅ Lógica de IP + Región -->
+<!-- Lógica de IP + Región -->
 <script>
 const params = new URLSearchParams(window.location.search);
 const key = params.get("k");
